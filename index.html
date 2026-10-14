@@ -680,6 +680,17 @@
     }
   });
 
-  document.getElementById("eco-clear-button").addEventListener("
+  "click", function () {
+  if (!confirm("Clear all waste records?")) return;
+  localStorage.removeItem("ecoSortRecords");
+  records = [];
+  message.textContent = "All records cleared.";
+  render();
+});
+
+render();
+})();
+</script>
 </body>
 </html>
+
