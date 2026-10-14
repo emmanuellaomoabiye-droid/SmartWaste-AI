@@ -202,10 +202,37 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
   <script src="script.js"></script>
-<!-- ECOSORT AI WASTE RECORDS -->
-<section id="ecosort-records">
-  <h2>♻️ Record Waste Collected</h2>
-  <p>Keep track of recyclable waste collected in your community.</p>
+<!-- ECOSORT AI DASHBOARD -->
+<section id="ecosort-dashboard">
+  <header class="eco-header">
+    <h1>♻️ ECOSORT AI 🇳🇬</h1>
+    <h2>Keep Nigeria Clean!</h2>
+    <p>Your smart recycling assistant.</p>
+    <p>Learn how to sort waste, record waste collected, and protect our environment.</p>
+  </header>
+
+  <h2>📊 Waste Dashboard</h2>
+
+  <div class="eco-cards">
+    <div class="eco-card">
+      <h3>Total Items</h3>
+      <p id="eco-total">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Plastic</h3>
+      <p id="eco-plastic">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Paper</h3>
+      <p id="eco-paper">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Metal</h3>
+      <p id="eco-metal">0</p>
+    </div>
+  </div>
+
+  <h2>📝 Record Waste Collected</h2>
 
   <label for="eco-type">Waste type:</label>
   <select id="eco-type">
@@ -218,160 +245,441 @@
   <input id="eco-quantity" type="number" min="1"
          step="1" placeholder="Enter quantity">
 
-  <button id="eco-record-button" type="button">
-    Record Waste
-  </button>
-
+  <button id="eco-record-button" type="button">Record Waste</button>
   <p id="eco-message" role="status"></p>
 
-  <h3>📊 Your Waste Records</h3>
-  <p id="eco-total">Total items: 0</p>
-  <ul id="eco-list"></ul>
+  <h2>📋 Your Waste Records</h2>
 
-  <button id="eco-clear-button" type="button">
-    Clear All Records
-  </button>
+  <div class="eco-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Waste Type</th>
+          <th>Quantity</th>
+          <th>Date Recorded</th>
+        </tr>
+      </thead>
+      <tbody id="eco-table-body"></tbody>
+    </table>
+  </div>
 
-  <p>🌍 Together, we can build a cleaner Nigeria!</p>
+  <p id="eco-empty">No waste recorded yet.</p>
+  <button id="eco-clear-button" type="button">Clear All Records</button>
+
+  <h2>🌍 Why Recycling Matters</h2>
+  <p>Recycling helps reduce pollution and keeps our communities clean.</p>
+  <h3>Together, we can build a cleaner Nigeria! 🇳🇬</h3>
 </section>
 
 <style>
-  #ecosort-records {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 22px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #eaffef, #b8f5c8);
-    color: #183b27;
-    font-family: Arial, sans-serif;
-    box-shadow: 0 5px 18px #0002;
-  }
-
-  #ecosort-records h2 {
-    color: #087830;
-  }
-
-  #ecosort-records label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-  }
-
-  #ecosort-records input,
-  #ecosort-records select {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-top: 7px;
-    border: 1px solid #8ac99b;
-    border-radius: 9px;
-    background: white;
-    font-size: 16px;
-  }
-
-  #ecosort-records button {
-    margin-top: 15px;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 9px;
-    background: #087830;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  #ecosort-records li {
-    margin: 10px 0;
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    overflow-wrap: anywhere;
-  }
+#ecosort-dashboard {
+  max-width: 950px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #183b27;
+  background: linear-gradient(135deg,#eaffef,#b8f5c8,#90e5a6);
+  border-radius: 18px;
+  box-shadow: 0 5px 18px #0002;
+}
+#ecosort-dashboard h1,
+#ecosort-dashboard h2 { color: #087830; }
+.eco-header {
+  text-align: center;
+  padding: 15px;
+  background: white;
+  border-radius: 14px;
+}
+.eco-cards {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.eco-card {
+  text-align: center;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px #0001;
+}
+.eco-card h3 { margin-bottom: 5px; }
+.eco-card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #087830;
+  margin: 8px;
+}
+#ecosort-dashboard label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+#ecosort-dashboard input,
+#ecosort-dashboard select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #8ac99b;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+}
+#ecosort-dashboard button {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #087830;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.eco-table-wrap { overflow-x: auto; }
+#ecosort-dashboard table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  background: white;
+}
+#ecosort-dashboard th,
+#ecosort-dashboard td {
+  padding: 10px;
+  border: 1px solid #b7d9bf;
+  text-align: left;
+}
+#ecosort-dashboard th {
+  background: #087830;
+  color: white;
+}
+#eco-message { font-weight: bold; }
+@media (min-width: 600px) {
+  .eco-cards { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
 </style>
 
 <script>
 (function () {
-  const storageKey = "ecoSortRecords";
+  const key = "ecoSortRecords";
   const typeInput = document.getElementById("eco-type");
   const quantityInput = document.getElementById("eco-quantity");
-  const recordButton = document.getElementById("eco-record-button");
-  const clearButton = document.getElementById("eco-clear-button");
-  const list = document.getElementById("eco-list");
-  const totalDisplay = document.getElementById("eco-total");
   const message = document.getElementById("eco-message");
+  const tableBody = document.getElementById("eco-table-body");
+  const emptyMessage = document.getElementById("eco-empty");
 
   let records = [];
 
   try {
-    const saved = JSON.parse(localStorage.getItem(storageKey));
+    const saved = JSON.parse(localStorage.getItem(key));
     if (Array.isArray(saved)) records = saved;
-  } catch (error) {
-    records = [];
-  }
+  } catch (error) {}
 
-  function renderRecords() {
-    list.replaceChildren();
+  function render() {
+    tableBody.replaceChildren();
+
+    const totals = { Plastic: 0, Paper: 0, Metal: 0 };
     let total = 0;
 
-    records.forEach(function (record) {
-      total += record.quantity;
+    records.forEach(function (record, index) {
+      const quantity = Number(record.quantity) || 0;
+      const type = record.type;
+      total += quantity;
 
-      const item = document.createElement("li");
-      item.textContent =
-        record.type + ": " + record.quantity + " item(s)";
-      list.appendChild(item);
+      if (Object.prototype.hasOwnProperty.call(totals, type)) {
+        totals[type] += quantity;
+      }
+
+      const row = document.createElement("tr");
+      const values = [
+        index + 1,
+        type,
+        quantity,
+        record.date || "Previously recorded"
+      ];
+
+      values.forEach(function (value) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      tableBody.appendChild(row);
     });
 
-    totalDisplay.textContent = "Total items: " + total;
-
-    if (records.length === 0) {
-      const item = document.createElement("li");
-      item.textContent = "No waste recorded yet.";
-      list.appendChild(item);
-    }
+    document.getElementById("eco-total").textContent = total;
+    document.getElementById("eco-plastic").textContent = totals.Plastic;
+    document.getElementById("eco-paper").textContent = totals.Paper;
+    document.getElementById("eco-metal").textContent = totals.Metal;
+    emptyMessage.hidden = records.length > 0;
   }
 
-  recordButton.addEventListener("click", function () {
+  document.getElementById("eco-record-button").addEventListener("click", function () {
     const quantity = Number(quantityInput.value);
 
     if (!Number.isSafeInteger(quantity) || quantity < 1) {
-      message.textContent = "Please enter a whole number greater than zero.";
+      message.textContent = "Enter a whole number greater than zero.";
       return;
     }
 
-    records.push({
+    const record = {
       type: typeInput.value,
-      quantity: quantity
-    });
+      quantity: quantity,
+      date: new Date().toLocaleDateString()
+    };
+
+    records.push(record);
 
     try {
-      localStorage.setItem(storageKey, JSON.stringify(records));
+      localStorage.setItem(key, JSON.stringify(records));
       message.textContent = "Waste recorded successfully! ♻️";
       quantityInput.value = "";
-      renderRecords();
+      render();
     } catch (error) {
       records.pop();
-      message.textContent = "Could not save records. Please try again.";
+      message.textContent = "Could not save. Please try again.";
     }
   });
 
-  clearButton.addEventListener("click", function () {
-    if (!confirm("Are you sure you want to clear all waste records?")) {
+  document.getElementById("eco-clear-button").addEventListener("<!-- ECOSORT AI DASHBOARD -->
+<section id="ecosort-dashboard">
+  <header class="eco-header">
+    <h1>♻️ ECOSORT AI 🇳🇬</h1>
+    <h2>Keep Nigeria Clean!</h2>
+    <p>Your smart recycling assistant.</p>
+    <p>Learn how to sort waste, record waste collected, and protect our environment.</p>
+  </header>
+
+  <h2>📊 Waste Dashboard</h2>
+
+  <div class="eco-cards">
+    <div class="eco-card">
+      <h3>Total Items</h3>
+      <p id="eco-total">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Plastic</h3>
+      <p id="eco-plastic">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Paper</h3>
+      <p id="eco-paper">0</p>
+    </div>
+    <div class="eco-card">
+      <h3>Metal</h3>
+      <p id="eco-metal">0</p>
+    </div>
+  </div>
+
+  <h2>📝 Record Waste Collected</h2>
+
+  <label for="eco-type">Waste type:</label>
+  <select id="eco-type">
+    <option value="Plastic">Plastic</option>
+    <option value="Paper">Paper</option>
+    <option value="Metal">Metal</option>
+  </select>
+
+  <label for="eco-quantity">Number of items:</label>
+  <input id="eco-quantity" type="number" min="1"
+         step="1" placeholder="Enter quantity">
+
+  <button id="eco-record-button" type="button">Record Waste</button>
+  <p id="eco-message" role="status"></p>
+
+  <h2>📋 Your Waste Records</h2>
+
+  <div class="eco-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Waste Type</th>
+          <th>Quantity</th>
+          <th>Date Recorded</th>
+        </tr>
+      </thead>
+      <tbody id="eco-table-body"></tbody>
+    </table>
+  </div>
+
+  <p id="eco-empty">No waste recorded yet.</p>
+  <button id="eco-clear-button" type="button">Clear All Records</button>
+
+  <h2>🌍 Why Recycling Matters</h2>
+  <p>Recycling helps reduce pollution and keeps our communities clean.</p>
+  <h3>Together, we can build a cleaner Nigeria! 🇳🇬</h3>
+</section>
+
+<style>
+#ecosort-dashboard {
+  max-width: 950px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #183b27;
+  background: linear-gradient(135deg,#eaffef,#b8f5c8,#90e5a6);
+  border-radius: 18px;
+  box-shadow: 0 5px 18px #0002;
+}
+#ecosort-dashboard h1,
+#ecosort-dashboard h2 { color: #087830; }
+.eco-header {
+  text-align: center;
+  padding: 15px;
+  background: white;
+  border-radius: 14px;
+}
+.eco-cards {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.eco-card {
+  text-align: center;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px #0001;
+}
+.eco-card h3 { margin-bottom: 5px; }
+.eco-card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #087830;
+  margin: 8px;
+}
+#ecosort-dashboard label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+#ecosort-dashboard input,
+#ecosort-dashboard select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #8ac99b;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+}
+#ecosort-dashboard button {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #087830;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.eco-table-wrap { overflow-x: auto; }
+#ecosort-dashboard table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  background: white;
+}
+#ecosort-dashboard th,
+#ecosort-dashboard td {
+  padding: 10px;
+  border: 1px solid #b7d9bf;
+  text-align: left;
+}
+#ecosort-dashboard th {
+  background: #087830;
+  color: white;
+}
+#eco-message { font-weight: bold; }
+@media (min-width: 600px) {
+  .eco-cards { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
+</style>
+
+<script>
+(function () {
+  const key = "ecoSortRecords";
+  const typeInput = document.getElementById("eco-type");
+  const quantityInput = document.getElementById("eco-quantity");
+  const message = document.getElementById("eco-message");
+  const tableBody = document.getElementById("eco-table-body");
+  const emptyMessage = document.getElementById("eco-empty");
+
+  let records = [];
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(key));
+    if (Array.isArray(saved)) records = saved;
+  } catch (error) {}
+
+  function render() {
+    tableBody.replaceChildren();
+
+    const totals = { Plastic: 0, Paper: 0, Metal: 0 };
+    let total = 0;
+
+    records.forEach(function (record, index) {
+      const quantity = Number(record.quantity) || 0;
+      const type = record.type;
+      total += quantity;
+
+      if (Object.prototype.hasOwnProperty.call(totals, type)) {
+        totals[type] += quantity;
+      }
+
+      const row = document.createElement("tr");
+      const values = [
+        index + 1,
+        type,
+        quantity,
+        record.date || "Previously recorded"
+      ];
+
+      values.forEach(function (value) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      tableBody.appendChild(row);
+    });
+
+    document.getElementById("eco-total").textContent = total;
+    document.getElementById("eco-plastic").textContent = totals.Plastic;
+    document.getElementById("eco-paper").textContent = totals.Paper;
+    document.getElementById("eco-metal").textContent = totals.Metal;
+    emptyMessage.hidden = records.length > 0;
+  }
+
+  document.getElementById("eco-record-button").addEventListener("click", function () {
+    const quantity = Number(quantityInput.value);
+
+    if (!Number.isSafeInteger(quantity) || quantity < 1) {
+      message.textContent = "Enter a whole number greater than zero.";
       return;
     }
 
+    const record = {
+      type: typeInput.value,
+      quantity: quantity,
+      date: new Date().toLocaleDateString()
+    };
+
+    records.push(record);
+
     try {
-      localStorage.removeItem(storageKey);
-      records = [];
-      message.textContent = "All records cleared.";
-      renderRecords();
+      localStorage.setItem(key, JSON.stringify(records));
+      message.textContent = "Waste recorded successfully! ♻️";
+      quantityInput.value = "";
+      render();
     } catch (error) {
-      message.textContent = "Could not clear the records.";
+      records.pop();
+      message.textContent = "Could not save. Please try again.";
     }
   });
 
-  renderRecords();
-})();
-  </script>
+  document.getElementById("eco-clear-button").addEventListener("
 </body>
 </html>
