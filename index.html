@@ -652,37 +652,10 @@
     document.getElementById("eco-metal").textContent = totals.Metal;
     emptyMessage.hidden = records.length > 0;
   }
-
-  document.getElementById("eco-record-button").addEventListener("click", function () {
-    const quantity = Number(quantityInput.value);
-
-    if (!Number.isSafeInteger(quantity) || quantity < 1) {
-      message.textContent = "Enter a whole number greater than zero.";
-      return;
-    }
-
-    const record = {
-      type: typeInput.value,
-      quantity: quantity,
-      date: new Date().toLocaleDateString()
-    };
-
-    records.push(record);
-
-    try {
-      localStorage.setItem(key, JSON.stringify(records));
-      message.textContent = "Waste recorded successfully! ♻️";
-      quantityInput.value = "";
-      render();
-    } catch (error) {
-      records.pop();
-      message.textContent = "Could not save. Please try again.";
-    }
-  });
-
-  "click", function () {
+document.getElementById("eco-clear-button").addEventListener("click", function () {
   if (!confirm("Clear all waste records?")) return;
-  localStorage.removeItem("ecoSortRecords");
+
+  localStorage.removeItem(key);
   records = [];
   message.textContent = "All records cleared.";
   render();
@@ -693,4 +666,5 @@ render();
 </script>
 </body>
 </html>
+   
 
