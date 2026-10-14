@@ -556,63 +556,73 @@ body.eco-dark #ecosort-dashboard .eco-card {
 
 <script>
 (function () {
-  const key = "ecoSortRecords";
+  const recordsKey = "ecoSortRecords";
+  const weekKey = "ecoSortCurrentWeek";
+
   const $ = id => document.getElementById(id);
 
-  const typeInput = $("eco-type");
-  const quantityInput = $("eco-quantity");
-  const message = $("eco-message");
-
   let records = [];
+  let currentWeek = 1;
 
   try {
-    const saved = JSON.parse(localStorage.getItem(key));
-    if (Array.isArray(saved)) records = saved;
+    const savedRecords = JSON.parse(
+      localStorage.getItem(recordsKey)
+    );
+
+    if (Array.isArray(savedRecords)) {
+      records = savedRecords;
+    }
+
+    currentWeek = Math.max(
+      1,
+      parseInt(localStorage.getItem(weekKey), 10) || 1
+    );
   } catch (error) {
     records = [];
+    currentWeek = 1;
   }
 
-  function recordDate(record) {
-    if (record.timestamp) {
-      const date = new Date(record.timestamp);
-      if (!Number.isNaN(date.getTime())) return date;
+  // Preserve older records and assign them to Week 1.
+  records = records.map(record => ({
+    ...record,
+    challengeWeek: Number(record.challengeWeek) || 1
+  }));
+
+  function save() {
+    localStorage.setItem(recordsKey, JSON.stringify(records));
+    localStorage.setItem(weekKey, String(currentWeek));
+  }
+
+  function weekItems(week) {
+    return records
+      .filter(record => Number(record.challengeWeek) === week)
+      .reduce((sum, record) => sum + (Number(record.quantity) || 0), 0);
+  }
+
+  // Automatically unlock the next week after 50 items.
+  function unlockCompletedWeeks() {
+    while (weekItems(currentWeek) >= 50) {
+      currentWeek++;
     }
 
-    if (record.date) {
-      const date = new Date(record.date);
-      if (!Number.isNaN(date.getTime())) return date;
-    }
-
-    return null;
-  }
-
-  function weekStart(date) {
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-
-    const day = (start.getDay() + 6) % 7;
-    start.setDate(start.getDate() - day);
-
-    return start;
-  }
-
-  function dateLabel(date) {
-    return date.toLocaleDateString();
+    save();
   }
 
   function render() {
-    const totals = { Plastic: 0, Paper: 0, Metal: 0 };
+    const totals = {
+      Plastic: 0,
+      Paper: 0,
+      Metal: 0
+    };
+
     const body = $("eco-table-body");
     body.replaceChildren();
 
     let total = 0;
-    const weeklyTotals = {};
 
-    records.forEach(function (record, index) {
+    records.forEach((record, index) => {
       const quantity = Number(record.quantity) || 0;
-      const type = record.type;
-
-      if (quantity < 1) return;
+      const type = record.type || "Unknown";
 
       total += quantity;
 
@@ -620,21 +630,14 @@ body.eco-dark #ecosort-dashboard .eco-card {
         totals[type] += quantity;
       }
 
-      const date = recordDate(record);
-      if (date) {
-        const start = weekStart(date);
-        const weekKey = start.toISOString().slice(0, 10);
-        weeklyTotals[weekKey] = (weeklyTotals[weekKey] || 0) + quantity;
-      }
-
       const row = document.createElement("tr");
 
       [
         index + 1,
-        type || "Unknown",
+        type,
         quantity,
-        date ? dateLabel(date) : (record.date || "Older record")
-      ].forEach(function (value) {
+        record.date || "Previously recorded"
+      ].forEach(value => {
         const cell = document.createElement("td");
         cell.textContent = value;
         row.appendChild(cell);
@@ -648,99 +651,114 @@ body.eco-dark #ecosort-dashboard .eco-card {
     $("eco-paper").textContent = totals.Paper;
     $("eco-metal").textContent = totals.Metal;
 
-    // Three items earn one point.
+    // Every 3 items earn 1 lifetime point.
     $("eco-points").textContent = Math.floor(total / 3);
 
     $("eco-empty").hidden = records.length > 0;
 
-    // Show this week's progress. The target is 50 ITEMS, not points.
-    const thisWeek = weekStart(new Date()).toISOString().slice(0, 10);
-    const thisWeekItems = weeklyTotals[thisWeek] || 0;
-    const progress = Math.min(100, (thisWeekItems / 50) * 100);
+    const items = weekItems(currentWeek);
+    const progress = Math.min(100, items / 50 * 100);
+
+    $("eco-week-title").textContent =
+      "🎯 Week " + currentWeek + " Challenge";
 
     $("eco-week-count").textContent =
-      thisWeekItems + " / 50 items collected";
+      Math.min(items, 50) + " / 50 items collected";
 
     $("eco-progress-fill").style.width = progress + "%";
 
     $("eco-week-message").textContent =
-      thisWeekItems >= 50
-        ? "🎉 Weekly goal completed! Keep it up!"
-        : (50 - thisWeekItems) + " more items to reach your weekly goal!";
+      (50 - Math.min(items, 50)) +
+      " items left to unlock Week " + (currentWeek + 1) + "!";
 
-    // Week-by-week history, newest first.
+    // Show all unlocked weeks.
     const history = $("eco-week-history");
     history.replaceChildren();
 
-    const weeks = Object.keys(weeklyTotals).sort().reverse();
+    for (let week = 1; week <= currentWeek; week++) {
+      const count = weekItems(week);
+      const completed = count >= 50;
 
-    if (weeks.length === 0) {
-      history.textContent = "Your weekly progress will appear here.";
-    } else {
-      weeks.forEach(function (week) {
-        const items = weeklyTotals[week];
-        const start = new Date(week + "T00:00:00");
-        const end = new Date(start);
-        end.setDate(end.getDate() + 6);
+      const box = document.createElement("div");
+      box.className = "eco-week-row";
 
-        const box = document.createElement("div");
-        box.className = "eco-week-row";
+      const title = document.createElement("strong");
+      title.textContent =
+        (completed ? "✅ " : "🔓 ") + "Week " + week;
 
-        const title = document.createElement("strong");
-        title.textContent =
-          dateLabel(start) + " – " + dateLabel(end);
+      const details = document.createElement("p");
+      details.textContent =
+        Math.min(count, 50) + "/50 items · " +
+        Math.floor(Math.min(count, 50) / 3) +
+        " points · " +
+        (completed ? "Completed!" : "In progress");
 
-        const details = document.createElement("p");
-        details.textContent =
-          items + " items · " +
-          Math.floor(items / 3) + " points · " +
-          Math.min(100, Math.round(items / 50 * 100)) +
-          "% of weekly goal";
-
-        box.append(title, details);
-        history.appendChild(box);
-      });
+      box.append(title, details);
+      history.appendChild(box);
     }
   }
 
   $("eco-record-button").addEventListener("click", function () {
-    const quantity = Number(quantityInput.value);
+    const quantity = Number($("eco-quantity").value);
+    const type = $("eco-type").value;
 
     if (!Number.isSafeInteger(quantity) || quantity < 1) {
-      message.textContent = "Please enter a whole number greater than zero.";
+      $("eco-message").textContent =
+        "Please enter a whole number greater than zero.";
       return;
     }
 
-    records.push({
-      type: typeInput.value,
-      quantity: quantity,
-      timestamp: new Date().toISOString(),
-      date: new Date().toLocaleDateString()
-    });
+    let remaining = quantity;
+
+    // If a quantity crosses a weekly target, split it between weeks.
+    while (remaining > 0) {
+      unlockCompletedWeeks();
+
+      const space = 50 - weekItems(currentWeek);
+      const amount = Math.min(remaining, space);
+
+      records.push({
+        type: type,
+        quantity: amount,
+        challengeWeek: currentWeek,
+        timestamp: new Date().toISOString(),
+        date: new Date().toLocaleDateString()
+      });
+
+      remaining -= amount;
+      unlockCompletedWeeks();
+    }
 
     try {
-      localStorage.setItem(key, JSON.stringify(records));
-      message.textContent = "Waste recorded successfully! ♻️";
-      quantityInput.value = "";
+      save();
+
+      $("eco-message").textContent =
+        "Waste recorded successfully! ♻️";
+
+      $("eco-quantity").value = "";
       render();
     } catch (error) {
-      records.pop();
-      message.textContent = "Could not save your record. Please try again.";
+      $("eco-message").textContent =
+        "Could not save your records. Please try again.";
     }
   });
 
   $("eco-clear-button").addEventListener("click", function () {
-    if (!confirm("Are you sure you want to clear all waste records?")) {
+    if (!confirm("Clear all records and restart at Week 1?")) {
       return;
     }
 
+    records = [];
+    currentWeek = 1;
+
     try {
-      localStorage.removeItem(key);
-      records = [];
-      message.textContent = "All waste records cleared.";
+      save();
+      $("eco-message").textContent =
+        "Records cleared. Restarting at Week 1!";
       render();
     } catch (error) {
-      message.textContent = "Could not clear records. Please try again.";
+      $("eco-message").textContent =
+        "Could not clear records. Please try again.";
     }
   });
 
@@ -755,9 +773,11 @@ body.eco-dark #ecosort-dashboard .eco-card {
       dark ? "☀️ Light Mode" : "🌙 Dark Mode";
   });
 
+  unlockCompletedWeeks();
   render();
 })();
-    </script>
+      </script>
+    
 
   
 </body>
