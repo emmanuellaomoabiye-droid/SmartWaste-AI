@@ -31,6 +31,15 @@ const resetBtn        = el('reset-btn');
 const globalError     = el('global-error');
 const globalErrorText = el('global-error-text');
 const modelStatus     = el('model-status');
+// ── Live camera controls ──
+const cameraStartBtn = el('camera-start-btn');
+const cameraScanBtn  = el('camera-scan-btn');
+const cameraStopBtn  = el('camera-stop-btn');
+const cameraVideo    = el('camera-video');
+const cameraView     = el('camera-view');
+const cameraError    = el('camera-error');
+
+let cameraStream = null;
 
 // ── Model loading ────────────────────────────────────────────────────────────
 async function loadModel() {
