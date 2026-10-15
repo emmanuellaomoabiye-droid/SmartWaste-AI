@@ -105,6 +105,8 @@ async function classify() {
 
     resultClass.textContent = best.className;
     resultConf.textContent  = `Confidence: ${pct}%`;
+    addToLogBtn.hidden = false;
+addToLogBtn.disabled = false;
     showState('result');
   } catch (err) {
     console.error('[SmartWaste] Classification error:', err);
