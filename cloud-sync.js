@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase.js";
+  import { auth, db } from "./firebase.js";
 
 import {
   doc,
@@ -74,48 +74,3 @@ function onAuthStateChangedSafe() {
               String(cloudData.currentWeek || 1)
             );
 
-            lastSavedData = JSON.stringify(getLocalData());
-
-            // Refresh the dashboard to display downloaded records.
-            location.reload();
-            return;
-          }
-
-          // First sign-in: preserve and upload this device's records.
-          const localData = getLocalData();
-
-          await saveToCloud(user, localData);
-
-          lastSavedData = JSON.stringify(localData);
-          syncStarted = true;
-
-          syncTimer = setInterval(async () => {
-            if (!syncStarted || auth.currentUser?.uid !== user.uid) {
-              return;
-            }
-
-            const currentData = getLocalData();
-            const serialized = JSON.stringify(currentData);
-
-            if (serialized === lastSavedData) return;
-
-            try {
-              await saveToCloud(user, currentData);
-              lastSavedData = serialized;
-            } catch (error) {
-              console.error("EcoSort cloud save failed:", error);
-            }
-          }, 2000);
-
-        } catch (error) {
-          console.error("EcoSort cloud sync failed:", error);
-          alert(
-            "Cloud sync failed. Your local records are still available. Please try again."
-          );
-        }
-      });
-    })
-    .catch(error => {
-      console.error("Firebase authentication error:", error);
-    });
-}
