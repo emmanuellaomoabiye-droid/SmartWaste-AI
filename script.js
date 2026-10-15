@@ -62,7 +62,76 @@ async function loadModel() {
     console.error('[SmartWaste] Model load error:', err);
   }
 }
+// ── Live camera functions ─────────────────────────────
+async function startCamera() {
+  if (!modelReady) {
+    cameraError.textContent = 'Please wait for the AI model to load.';
+    cameraError.hidden = false;
+    return;
+  }
 
+  try {
+    cameraError.hidden = true;
+
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' } },
+      audio: false
+    });
+
+    cameraVideo.srcObject = cameraStream;
+    cameraView.hidden = false;
+    await cameraVideo.play();
+  } catch (err) {
+    cameraError.textContent =
+      'Camera could not open. Please allow camera permission and try again.';
+    cameraError.hidden = false;
+    console.error('Camera error:', err);
+  }
+}
+
+async function scanCamera() {
+  if (!modelReady || !cameraStream) {
+    cameraError.textContent = 'Please open the camera first.';
+    cameraError.hidden = false;
+    return;
+  }
+
+  try {
+    cameraScanBtn.disabled = true;
+    cameraScanBtn.textContent = '🔍 Scanning...';
+
+    const predictions = await model.predict(cameraVideo);
+    const best = predictions.reduce((a, b) =>
+      a.probability > b.probability ? a : b
+    );
+
+    const pct = (best.probability * 100).toFixed(1);
+
+    resultClass.textContent = best.className;
+    resultConf.textContent = `Confidence: ${pct}%`;
+    addToLogBtn.hidden = false;
+    addToLogBtn.disabled = false;
+
+    showState('result');
+  } catch (err) {
+    cameraError.textContent = 'Scan failed. Please try again.';
+    cameraError.hidden = false;
+    console.error('Camera scan error:', err);
+  } finally {
+    cameraScanBtn.disabled = false;
+    cameraScanBtn.textContent = '♻️ Scan Waste';
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+
+  cameraVideo.srcObject = null;
+  cameraView.hidden = true;
+}
 function setStatus(text, cls) {
   modelStatus.textContent = text;
   modelStatus.className   = 'model-status ' + cls;
