@@ -750,18 +750,7 @@ body.eco-dark #ecosort-dashboard .eco-card {
     $("analytics-top").textContent =
       total === 0 || topWaste[0][1] === topWaste[1][1]
         ? (total === 0 ? "None yet" : "Tie")
-        : topWaste[0][0];    // Update Waste Analytics cards.
-    $("analytics-plastic").textContent = totals.Plastic;
-    $("analytics-paper").textContent = totals.Paper;
-    $("analytics-metal").textContent = totals.Metal;
-
-    const topWaste = Object.entries(totals)
-      .sort((a, b) => b[1] - a[1]);
-
-    $("analytics-top").textContent =
-      total === 0 || topWaste[0][1] === topWaste[1][1]
-        ? (total === 0 ? "None yet" : "Tie")
-        : topWaste[0][0];
+        : topWaste[0][0];    
     
     // Every 3 items earn 1 lifetime point.
     $("eco-points").textContent = Math.floor(total / 3);
@@ -774,7 +763,7 @@ body.eco-dark #ecosort-dashboard .eco-card {
     $("eco-week-title").textContent =
       "🎯 Week " + currentWeek + " Challenge";
 
-    $("Eco-week-count").textContent =
+    $("eco-week-count").textContent =
       Math.min(items, 50) + " / 50 items collected";
 
     $("eco-progress-fill").style.width = progress + "%";
