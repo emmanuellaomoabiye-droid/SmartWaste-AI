@@ -13,7 +13,7 @@ import {
 const RECORDS_KEY = "ecoSortRecords";
 const WEEK_KEY = "ecoSortCurrentWeek";
 
-let syncTimer = null;
+let busy = false;
 let lastSaved = "";
 
 function getLocalData() {
@@ -28,76 +28,72 @@ function getLocalData() {
   };
 }
 
-async function saveCloud(user, data) {
-  const reference = doc(
-    db, "users", user.uid, "data", "ecoSort"
-  );
+function cloudRef(user) {
+  return doc(db, "users", user.uid, "data", "ecoSort");
+}
 
-  await setDoc(reference, data);
+async function saveCloud(user) {
+  if (busy || auth.currentUser?.uid !== user.uid) return;
+
+  busy = true;
+
+  try {
+    const data = getLocalData();
+    await setDoc(cloudRef(user), data);
+    lastSaved = JSON.stringify(data);
+    console.log("EcoSort cloud save successful.");
+  } catch (error) {
+    console.error("EcoSort cloud save failed:", error);
+  } finally {
+    busy = false;
+  }
 }
 
 onAuthStateChanged(auth, async user => {
-  clearInterval(syncTimer);
-  syncTimer = null;
-  lastSaved = "";
-
-  if (!user) return;
+  if (!user) {
+    lastSaved = "";
+    return;
+  }
 
   try {
-    const reference = doc(
-      db, "users", user.uid, "data", "ecoSort"
-    );
-
+    const reference = cloudRef(user);
     const snapshot = await getDoc(reference);
-    const localData = getLocalData();
 
-    if (snapshot.exists()) {
+    if (!snapshot.exists()) {
+      await saveCloud(user);
+    } else {
       const cloudData = snapshot.data();
-      const records = cloudData.records || [];
-      const week = Math.max(
-        1,
-        parseInt(cloudData.currentWeek, 10) || 1
-      );
 
-      const changed =
-        JSON.stringify(localData.records) !== JSON.stringify(records) ||
-        localData.currentWeek !== week;
+      // Keep this device's records unless the local list is empty.
+      const localData = getLocalData();
 
-      if (changed) {
+      if (
+        localData.records.length === 0 &&
+        Array.isArray(cloudData.records) &&
+        cloudData.records.length > 0
+      ) {
         localStorage.setItem(
           RECORDS_KEY,
-          JSON.stringify(records)
+          JSON.stringify(cloudData.records)
         );
-        localStorage.setItem(WEEK_KEY, String(week));
 
-        // Reload once to display the downloaded records.
-        location.reload();
-        return;
+        localStorage.setItem(
+          WEEK_KEY,
+          String(cloudData.currentWeek || 1)
+        );
+
+        // No page reload; the dashboard remains stable.
+        window.dispatchEvent(new Event("ecoSortCloudLoaded"));
+      } else {
+        await saveCloud(user);
       }
-    } else {
-      // First sign-in: upload this device's existing records.
-      await saveCloud(user, localData);
     }
 
+    window.addEventListener("ecoSortLocalSaved", () => {
+      saveCloud(user);
+    });
+
     lastSaved = JSON.stringify(getLocalData());
-
-    syncTimer = setInterval(async () => {
-      if (auth.currentUser?.uid !== user.uid) return;
-
-      const currentData = getLocalData();
-      const serialized = JSON.stringify(currentData);
-
-      if (serialized === lastSaved) return;
-
-      try {
-        await saveCloud(user, currentData);
-        lastSaved = serialized;
-      } catch (error) {
-        console.error("EcoSort cloud save failed:", error);
-      }
-    }, 3000);
-
-    console.log("EcoSort cloud sync ready.");
   } catch (error) {
     console.error("EcoSort cloud sync failed:", error);
   }
