@@ -119,6 +119,32 @@
                  accept="image/jpeg,image/jpg,image/png,image/webp"
                  class="sr-only" aria-label="Upload waste image" />
         </div>
+        <!-- LIVE CAMERA -->
+<div id="camera-section" class="preview-section">
+  <button id="camera-start-btn" class="btn btn-primary btn-full" type="button">
+    📸 Open Camera
+  </button>
+
+  <div id="camera-view" hidden>
+    <video
+      id="camera-video"
+      autoplay
+      playsinline
+      muted
+      style="width:100%; max-width:500px; border-radius:16px;"
+    ></video>
+
+    <button id="camera-scan-btn" class="btn btn-primary btn-full" type="button">
+      ♻️ Scan Waste
+    </button>
+
+    <button id="camera-stop-btn" class="btn btn-full" type="button">
+      ✖ Stop Camera
+    </button>
+  </div>
+
+  <p id="camera-error" role="alert" hidden></p>
+</div>
 
         <!-- Preview -->
         <div id="preview-section" class="preview-section" hidden>
