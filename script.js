@@ -26,6 +26,7 @@ const loadingText     = el('loading-text');
 const resultSection   = el('result-section');
 const resultClass     = el('result-class');
 const resultConf      = el('result-conf');
+const addToLogBtn     = el('add-to-log-btn');
 const resetBtn        = el('reset-btn');
 const globalError     = el('global-error');
 const globalErrorText = el('global-error-text');
