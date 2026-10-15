@@ -125,6 +125,9 @@ function reset() {
   previewImage.hidden = true;
   imgPlaceholder.hidden = false;
   fileInput.value  = '';
+  addToLogBtn.hidden = true;
+addToLogBtn.disabled = false;
+addToLogBtn.textContent = '♻️ Add to Log';
   hideInlineError();
   classifying = false;
   classifyBtn.disabled = false;
@@ -181,7 +184,35 @@ uploadZone.addEventListener('drop', (e) => {
 removeBtn.addEventListener('click', reset);
 classifyBtn.addEventListener('click', classify);
 resetBtn.addEventListener('click', reset);
+addToLogBtn.addEventListener('click', () => {
+  const label = resultClass.textContent.trim().toLowerCase();
 
+  let type = '';
+  if (label.includes('plastic')) type = 'Plastic';
+  else if (label.includes('paper')) type = 'Paper';
+  else if (label.includes('metal')) type = 'Metal';
+
+  if (!type) {
+    showInlineError('Please classify plastic, paper, or metal first.');
+    return;
+  }
+
+  const typeInput = el('eco-type');
+  const quantityInput = el('eco-quantity');
+  const recordButton = el('eco-record-button');
+
+  if (!typeInput || !quantityInput || !recordButton) {
+    showInlineError('Dashboard form not found. Please refresh the page.');
+    return;
+  }
+
+  typeInput.value = type;
+  quantityInput.value = '1';
+  recordButton.click();
+
+  addToLogBtn.disabled = true;
+  addToLogBtn.textContent = '✅ Added to Log';
+});
 // ── Init ──────────────────────────────────────────────────────────────────────
 showState('upload');
 loadModel();
