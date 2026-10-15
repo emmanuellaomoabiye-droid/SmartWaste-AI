@@ -64,12 +64,7 @@ async function loadModel() {
 }
 // ── Live camera functions ─────────────────────────────
 async function startCamera() {
-  if (!modelReady) {
-    cameraError.textContent = 'Please wait for the AI model to load.';
-    cameraError.hidden = false;
-    return;
-  }
-
+  
   try {
     cameraError.hidden = true;
 
@@ -90,8 +85,8 @@ async function startCamera() {
 }
 
 async function scanCamera() {
-  if (!modelReady || !cameraStream) {
-    cameraError.textContent = 'Please open the camera first.';
+  if (!modelReady) {
+    cameraError.textContent = 'Please wait for the AI model to load.';
     cameraError.hidden = false;
     return;
   }
