@@ -262,6 +262,9 @@ uploadZone.addEventListener('drop', (e) => {
 removeBtn.addEventListener('click', reset);
 classifyBtn.addEventListener('click', classify);
 resetBtn.addEventListener('click', reset);
+cameraStartBtn.addEventListener('click', startCamera);
+cameraScanBtn.addEventListener('click', scanCamera);
+cameraStopBtn.addEventListener('click', stopCamera);
 addToLogBtn.addEventListener('click', () => {
   const label = resultClass.textContent.trim().toLowerCase();
 
