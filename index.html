@@ -320,7 +320,38 @@
       Clear All Records
     </button>
   </section>
+  <!-- WASTE ANALYTICS -->
+  <section class="eco-analytics">
+    <h2>📊 Waste Analytics</h2>
+    <p>See your recycling progress at a glance.</p>
 
+    <div class="eco-analytics-grid">
+      <div class="eco-analytics-card">
+        <span>🥤 Plastic</span>
+        <strong id="analytics-plastic">0</strong>
+        <small>Items recorded</small>
+      </div>
+
+      <div class="eco-analytics-card">
+        <span>📄 Paper</span>
+        <strong id="analytics-paper">0</strong>
+        <small>Items recorded</small>
+      </div>
+
+      <div class="eco-analytics-card">
+        <span>🥫 Metal</span>
+        <strong id="analytics-metal">0</strong>
+        <small>Items recorded</small>
+      </div>
+
+      <div class="eco-analytics-card">
+        <span>🏆 Most Recycled</span>
+        <strong id="analytics-top">None yet</strong>
+        <small>Top waste category</small>
+      </div>
+    </div>
+  </section>
+  
   <footer class="eco-footer">
     <h2>🌍 Why Recycling Matters</h2>
     <p>Recycling helps reduce pollution and keeps our communities clean.</p>
@@ -553,6 +584,63 @@ body.eco-dark #ecosort-dashboard .eco-card {
     grid-column: auto;
   }
 }
+/* WASTE ANALYTICS */
+#ecosort-dashboard .eco-analytics {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--eco-card);
+  color: var(--eco-text);
+  box-shadow: 0 8px 24px rgba(0, 80, 30, 0.12);
+}
+
+#ecosort-dashboard .eco-analytics h2 {
+  margin: 0 0 8px;
+  color: var(--eco-green);
+  font-size: 22px;
+}
+
+#ecosort-dashboard .eco-analytics > p {
+  margin-bottom: 18px;
+}
+
+#ecosort-dashboard .eco-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#ecosort-dashboard .eco-analytics-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(8, 120, 48, 0.18);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff, #eaffef);
+  overflow-wrap: anywhere;
+}
+
+#ecosort-dashboard .eco-analytics-card span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#ecosort-dashboard .eco-analytics-card strong {
+  color: #087830;
+  font-size: 27px;
+}
+
+#ecosort-dashboard .eco-analytics-card small {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+@media (max-width: 360px) {
+  #ecosort-dashboard .eco-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  }
 </style>
 
 <script>
