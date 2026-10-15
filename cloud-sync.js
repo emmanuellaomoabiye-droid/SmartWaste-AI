@@ -1,4 +1,5 @@
-  import { auth, db } from "./firebase.js";
+
+   import { auth, db } from "./firebase.js";
 
 import {
   doc,
@@ -73,4 +74,3 @@ function onAuthStateChangedSafe() {
               WEEK_KEY,
               String(cloudData.currentWeek || 1)
             );
-
