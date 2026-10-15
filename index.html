@@ -706,8 +706,10 @@ body.eco-dark #ecosort-dashboard .eco-card {
   }));
 
   function save() {
-    localStorage.setItem(recordsKey, JSON.stringify(records));
-    localStorage.setItem(weekKey, String(currentWeek));
+  localStorage.setItem(recordsKey, JSON.stringify(records));
+  localStorage.setItem(weekKey, String(currentWeek));
+
+  window.dispatchEvent(new Event("ecoSortLocalSaved"));
   }
 
   function weekItems(week) {
