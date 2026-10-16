@@ -869,7 +869,33 @@ body.eco-dark #ecosort-dashboard .eco-card {
 
       box.append(title, details);
       history.appendChild(box);
-    }
+   }
+  
+      // Environmental Impact
+    const impactPlastic = records
+      .filter(r => r.type === "Plastic")
+      .reduce((sum, r) => sum + (Number(r.quantity) || 0), 0);
+
+    const impactPaper = records
+      .filter(r => r.type === "Paper")
+      .reduce((sum, r) => sum + (Number(r.quantity) || 0), 0);
+
+    const impactMetal = records
+      .filter(r => r.type === "Metal")
+      .reduce((sum, r) => sum + (Number(r.quantity) || 0), 0);
+
+    const impactTotal =
+      impactPlastic + impactPaper + impactMetal;
+
+    $("impact-total").textContent = impactTotal;
+    $("impact-plastic").textContent = impactPlastic;
+    $("impact-paper").textContent = impactPaper;
+    $("impact-metal").textContent = impactMetal;
+
+    $("impact-message").textContent = impactTotal === 0
+      ? "Start recording waste to see your environmental impact! 🌱"
+      : "Amazing! You have recorded " + impactTotal +
+        " waste items. Keep helping to build a cleaner Nigeria! 🇳🇬♻️";
   }
 window.addEventListener("ecoSortCloudLoaded", function () {
   try {
