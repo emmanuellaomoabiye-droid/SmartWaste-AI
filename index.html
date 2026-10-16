@@ -836,6 +836,33 @@ body.eco-dark #ecosort-dashboard .eco-card {
     $("eco-plastic").textContent = totals.Plastic;
     $("eco-paper").textContent = totals.Paper;
     $("eco-metal").textContent = totals.Metal;
+
+    
+    // Update colourful recycling charts.
+    const chartMax = Math.max(
+      totals.Plastic,
+      totals.Paper,
+      totals.Metal,
+      1
+    );
+
+    $("chart-plastic-count").textContent = totals.Plastic;
+    $("chart-paper-count").textContent = totals.Paper;
+    $("chart-metal-count").textContent = totals.Metal;
+
+    $("chart-plastic-bar").style.width =
+      (totals.Plastic / chartMax * 100) + "%";
+
+    $("chart-paper-bar").style.width =
+      (totals.Paper / chartMax * 100) + "%";
+
+    $("chart-metal-bar").style.width =
+      (totals.Metal / chartMax * 100) + "%";
+
+    $("chart-summary").textContent =
+      "You've recorded " + total +
+      " items in total. Keep recycling! ♻️";
+
         // Update Waste Analytics cards.
     $("analytics-plastic").textContent = totals.Plastic;
     $("analytics-paper").textContent = totals.Paper;
