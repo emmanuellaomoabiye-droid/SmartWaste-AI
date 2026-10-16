@@ -127,13 +127,8 @@ async function startCamera() {
     );
 
     const pct = (best.probability * 100).toFixed(1);
-    if (best.probability < 0.80) {
-  cameraError.textContent =
-    'Low confidence. Try scanning the waste again in better lighting.';
-  cameraError.hidden = false;
-    }
-
-    resultClass.textContent = best.className;
+   
+  resultClass.textContent = best.className;
     resultConf.textContent = `Confidence: ${pct}%`;
     addToLogBtn.hidden = false;
     addToLogBtn.disabled = false;
