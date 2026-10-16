@@ -531,3 +531,52 @@ h2 {
   .card { padding: 24px 20px; border-radius: 16px; }
   .hero-actions { flex-direction: column; }
 }
+
+/* EcoSort AI Pie Chart */
+.eco-pie-panel {
+  background: #ffffff;
+  border: 1px solid #b8eac8;
+  border-radius: 18px;
+  padding: 18px;
+  margin: 20px 0;
+  color: #183b27;
+  box-shadow: 0 6px 18px rgba(0, 107, 45, 0.10);
+}
+
+.eco-pie-panel h3 {
+  color: #087830;
+  margin-top: 0;
+}
+
+#eco-pie-chart {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  margin: 20px auto;
+  background: conic-gradient(
+    #16a34a 0% 33.33%,
+    #3b82f6 33.33% 66.66%,
+    #f97316 66.66% 100%
+  );
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 0 2px #d5f5df;
+}
+
+.eco-pie-legend p {
+  margin: 10px 0;
+  padding: 8px;
+  background: #f0fff4;
+  border-radius: 8px;
+}
+
+@media (max-width: 400px) {
+  .eco-pie-panel {
+    padding: 12px;
+  }
+
+  #eco-pie-chart {
+    width: 160px;
+    height: 160px;
+  }
+}
+
