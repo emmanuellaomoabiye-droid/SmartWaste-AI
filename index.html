@@ -1320,6 +1320,20 @@ window.addEventListener("ecoSortCloudLoaded", function () {
     @media (min-width: 650px) {
       #eco-app-navigation button span { font-size: 12px; }
     }
+  #eco-app-navigation {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+#eco-app-navigation button {
+  flex: 0 0 75px !important;
+  width: 75px !important;
+  min-width: 75px !important;
+}
   `;
   document.head.appendChild(style);
 })();
