@@ -906,7 +906,37 @@ body.eco-dark #ecosort-dashboard .eco-card {
     $("analytics-plastic").textContent = totals.Plastic;
     $("analytics-paper").textContent = totals.Paper;
     $("analytics-metal").textContent = totals.Metal;
+    // Update EcoSort AI pie chart.
+    const pieTotal =
+      totals.Plastic + totals.Paper + totals.Metal;
 
+    const plasticPct = pieTotal
+      ? totals.Plastic / pieTotal * 100 : 0;
+    const paperPct = pieTotal
+      ? totals.Paper / pieTotal * 100 : 0;
+    const metalPct = pieTotal
+      ? totals.Metal / pieTotal * 100 : 0;
+
+    $("pie-plastic").textContent = totals.Plastic;
+    $("pie-paper").textContent = totals.Paper;
+    $("pie-metal").textContent = totals.Metal;
+
+    $("pie-plastic-pct").textContent =
+      plasticPct.toFixed(1) + "%";
+    $("pie-paper-pct").textContent =
+      paperPct.toFixed(1) + "%";
+    $("pie-metal-pct").textContent =
+      metalPct.toFixed(1) + "%";
+
+    $("eco-pie-chart").style.background =
+      pieTotal === 0
+        ? "#e5e7eb"
+        : `conic-gradient(
+            #16a34a 0% ${plasticPct}%,
+            #3b82f6 ${plasticPct}% ${plasticPct + paperPct}%,
+            #f97316 ${plasticPct + paperPct}% 100%
+          )`;
+    
     const topWaste = Object.entries(totals)
       .sort((a, b) => b[1] - a[1]);
 
