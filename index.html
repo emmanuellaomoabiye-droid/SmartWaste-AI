@@ -1279,8 +1279,12 @@ window.addEventListener("ecoSortCloudLoaded", function () {
       transform: translateX(-50%);
       width: calc(100% - 16px);
       max-width: 620px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      justify-content: flex-start;
       gap: 3px;
       padding: 8px 4px;
       background: #ffffff;
