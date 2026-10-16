@@ -788,11 +788,25 @@ body.eco-dark #ecosort-dashboard .eco-card {
     currentWeek = 1;
   }
 
+  
   // Preserve older records and assign them to Week 1.
   records = records.map(record => ({
+    ...record,
+    challengeWeek: Number(record.challengeWeek) || 1
+  }));
 
-    save();
+  function save() {
+    localStorage.setItem(recordsKey, JSON.stringify(records));
+    localStorage.setItem(weekKey, String(currentWeek));
   }
+
+  function unlockCompletedWeeks() {
+    while (weekItems(currentWeek) >= 50) {
+      currentWeek++;
+    }
+  }
+
+
 
   function render() {
     const totals = {
