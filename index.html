@@ -795,9 +795,17 @@ body.eco-dark #ecosort-dashboard .eco-card {
     challengeWeek: Number(record.challengeWeek) || 1
   }));
 
+  
   function save() {
     localStorage.setItem(recordsKey, JSON.stringify(records));
     localStorage.setItem(weekKey, String(currentWeek));
+    window.dispatchEvent(new Event("ecoSortLocalSaved"));
+  }
+
+  function weekItems(week) {
+    return records
+      .filter(record => Number(record.challengeWeek) === week)
+      .reduce((sum, record) => sum + (Number(record.quantity) || 0), 0);
   }
 
   function unlockCompletedWeeks() {
@@ -805,6 +813,7 @@ body.eco-dark #ecosort-dashboard .eco-card {
       currentWeek++;
     }
   }
+
 
 
 
