@@ -1316,42 +1316,18 @@ min-width: 64px;
       background: #087830;
       color: white;
     }
-    body { padding-bottom: 82px; }
+    body { padding-bottom: 20px; }
+
+#ecosort-dashboard {
+  margin-left: 90px;
+}
     #ecosort-dashboard .eco-app-screen .classifier-section {
       padding: 12px 0;
     }
     @media (min-width: 650px) {
       #eco-app-navigation button span { font-size: 12px; }
     }
-  #eco-app-navigation {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: flex-start !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-}
-
-#eco-app-navigation button {
-  flex: 0 0 75px !important;
-  width: 75px !important;
-  min-width: 75px !important;
-}
-  `;
-    nav.style.setProperty("display", "flex", "important");
-    nav.style.setProperty("flex-direction", "row", "important");
-    nav.style.setProperty("flex-wrap", "nowrap", "important");
-    nav.style.setProperty("overflow-x", "auto", "important");
-    nav.style.setProperty("overflow-y", "hidden", "important");
-    nav.style.setProperty("justify-content", "flex-start", "important");
-    nav.style.setProperty("width", "calc(100% - 16px)", "important");
-    nav.style.setProperty("max-width", "620px", "important");
-
-    nav.querySelectorAll("button").forEach(button => {
-      button.style.setProperty("flex", "0 0 75px", "important");
-      button.style.setProperty("width", "75px", "important");
-      button.style.setProperty("min-width", "75px", "important");
-    });
+  
   document.head.appendChild(style);
 })();
 </script>
