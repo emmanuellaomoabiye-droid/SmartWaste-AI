@@ -1076,6 +1076,184 @@ window.addEventListener("ecoSortCloudLoaded", function () {
     
 <script type="module" src="cloud-sync.js"></script>
   
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const app = $("ecosort-dashboard");
+
+  if (!app || $("eco-app-navigation")) return;
+
+  const home = document.createElement("div");
+  const charts = document.createElement("div");
+  const analysis = document.createElement("div");
+  const settings = document.createElement("div");
+  const help = document.createElement("div");
+
+  const screens = { home, charts, analysis, settings, help };
+
+  Object.entries(screens).forEach(([name, screen]) => {
+    screen.className = "eco-app-screen";
+    screen.dataset.screen = name;
+    app.appendChild(screen);
+  });
+
+  home.classList.add("active");
+
+  const recordPanel = $("eco-record-title").closest("section");
+  const weekPanel = $("eco-week-title").closest("section");
+  const recordsPanel = $("eco-table-body").closest("section");
+  const classifier = document.querySelector(".classifier-section");
+  const oldHero = app.querySelector(".eco-hero");
+  const dashboardTitle = $("eco-dashboard-title");
+  const cards = app.querySelector(".eco-cards");
+  const analytics = app.querySelector(".eco-analytics");
+  const chart = $("eco-charts");
+  const impact = $("eco-impact");
+  const footer = app.querySelector(".eco-footer");
+  const themeButton = $("eco-theme-button");
+  const modelStatus = $("model-status");
+
+  [
+    oldHero, dashboardTitle, cards, classifier,
+    recordPanel, weekPanel, recordsPanel
+  ].forEach(node => {
+    if (node) home.appendChild(node);
+  });
+
+  [chart].forEach(node => {
+    if (node) charts.appendChild(node);
+  });
+
+  [analytics, impact].forEach(node => {
+    if (node) analysis.appendChild(node);
+  });
+
+  const settingsPanel = document.createElement("section");
+  settingsPanel.className = "eco-panel";
+  settingsPanel.innerHTML =
+    "<h2>⚙️ Settings</h2>" +
+    "<p>Manage your EcoSort AI preferences.</p>";
+
+  if (themeButton) settingsPanel.appendChild(themeButton);
+  if (modelStatus) settingsPanel.appendChild(modelStatus);
+  settings.appendChild(settingsPanel);
+
+  const helpPanel = document.createElement("section");
+  helpPanel.className = "eco-panel";
+  helpPanel.innerHTML =
+    "<h2>❓ Help & Recycling Guide</h2>" +
+    "<p>1. Scan waste or upload a picture.</p>" +
+    "<p>2. Check the predicted category.</p>" +
+    "<p>3. Record the correct waste type and quantity.</p>" +
+    "<p>4. Visit Charts and Analysis to track progress.</p>";
+
+  help.appendChild(helpPanel);
+  if (footer) help.appendChild(footer);
+
+  [".nav", ".hero", ".how", ".site-footer"].forEach(selector => {
+    document.querySelectorAll(selector).forEach(node => {
+      node.hidden = true;
+    });
+  });
+
+  const topbar = app.querySelector(".eco-topbar");
+  const menu = $("eco-menu");
+  if (topbar) topbar.hidden = true;
+  if (menu) menu.hidden = true;
+
+  const nav = document.createElement("nav");
+  nav.id = "eco-app-navigation";
+  nav.setAttribute("aria-label", "Main app navigation");
+
+  const items = [
+    ["home", "🏠", "Home"],
+    ["charts", "🥧", "Charts"],
+    ["analysis", "📊", "Analysis"],
+    ["settings", "⚙️", "Settings"],
+    ["help", "❓", "Help"]
+  ];
+
+  items.forEach(([name, emoji, label], index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.target = name;
+    button.innerHTML = emoji + "<span>" + label + "</span>";
+    button.setAttribute("aria-current", index === 0 ? "page" : "false");
+
+    button.addEventListener("click", () => {
+      Object.entries(screens).forEach(([key, screen]) => {
+        screen.classList.toggle("active", key === name);
+      });
+
+      nav.querySelectorAll("button").forEach(item => {
+        item.setAttribute(
+          "aria-current",
+          item === button ? "page" : "false"
+        );
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    nav.appendChild(button);
+  });
+
+  app.appendChild(nav);
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #ecosort-dashboard .eco-app-screen { display: none; }
+    #ecosort-dashboard .eco-app-screen.active { display: block; }
+    #eco-app-navigation {
+      position: fixed;
+      z-index: 9999;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 16px);
+      max-width: 620px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 3px;
+      padding: 8px 4px;
+      background: #ffffff;
+      border: 1px solid #b7d9bf;
+      border-radius: 18px;
+      box-shadow: 0 4px 22px #0003;
+    }
+    #eco-app-navigation button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 9px 2px;
+      background: transparent;
+      color: #183b27;
+      font-size: 19px;
+      line-height: 1.2;
+      min-width: 0;
+    }
+    #eco-app-navigation button span {
+      font-size: 10px;
+    }
+    #eco-app-navigation button[aria-current="page"] {
+      background: #087830;
+      color: white;
+    }
+    body { padding-bottom: 82px; }
+    #ecosort-dashboard .eco-app-screen .classifier-section {
+      padding: 12px 0;
+    }
+    @media (min-width: 650px) {
+      #eco-app-navigation button span { font-size: 12px; }
+    }
+  `;
+  document.head.appendChild(style);
+})();
+</script>
+
+  
 </body>
 </html>
   
