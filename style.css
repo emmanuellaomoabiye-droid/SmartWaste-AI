@@ -580,3 +580,26 @@ h2 {
   }
 }
 
+/* EcoSort AI - Scrollable Navigation */
+#eco-app-navigation {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  padding: 10px;
+  max-width: 100%;
+  scrollbar-width: thin;
+}
+
+#eco-app-navigation > * {
+  flex: 0 0 auto;
+}
+
+#eco-app-navigation button {
+  flex-shrink: 0;
+}
+
+
