@@ -379,6 +379,30 @@
       </div>
     </div>
   </section>
+  
+  <!-- COLOURFUL RECYCLING CHARTS -->
+  <section class="eco-panel" id="eco-charts">
+    <h2>📈 Recycling Charts</h2>
+    <p>Compare your recorded waste items.</p>
+
+    <p>🥤 Plastic: <strong id="chart-plastic-count">0</strong></p>
+    <div style="background:#e5e7eb;border-radius:12px;overflow:hidden;height:20px;">
+      <div id="chart-plastic-bar" style="background:#22c55e;width:0%;height:20px;"></div>
+    </div>
+
+    <p>📄 Paper: <strong id="chart-paper-count">0</strong></p>
+    <div style="background:#e5e7eb;border-radius:12px;overflow:hidden;height:20px;">
+      <div id="chart-paper-bar" style="background:#3b82f6;width:0%;height:20px;"></div>
+    </div>
+
+    <p>🥫 Metal: <strong id="chart-metal-count">0</strong></p>
+    <div style="background:#e5e7eb;border-radius:12px;overflow:hidden;height:20px;">
+      <div id="chart-metal-bar" style="background:#f59e0b;width:0%;height:20px;"></div>
+    </div>
+
+    <p id="chart-summary">Record waste to build your chart! ♻️</p>
+  </section>
+
 
   
   <!-- ENVIRONMENTAL IMPACT -->
@@ -652,7 +676,29 @@ body.eco-dark #ecosort-dashboard .eco-card {
   }
 
   #ecosort-dashboard .eco-points {
-    grid-column: auto;
+    grid-column
+    ...record,
+    challengeWeek: Number(record.challengeWeek) || 1
+  }));
+
+  function save() {
+  localStorage.setItem(recordsKey, JSON.stringify(records));
+  localStorage.setItem(weekKey, String(currentWeek));
+
+  window.dispatchEvent(new Event("ecoSortLocalSaved"));
+  }
+
+  function weekItems(week) {
+    return records
+      .filter(record => Number(record.challengeWeek) === week)
+      .reduce((sum, record) => sum + (Number(record.quantity) || 0), 0);
+  }
+
+  // Automatically unlock the next week after 50 items.
+  function unlockCompletedWeeks() {
+    while (weekItems(currentWeek) >= 50) {
+      currentWeek++;
+    }: auto;
   }
 }
 /* WASTE ANALYTICS */
@@ -744,28 +790,6 @@ body.eco-dark #ecosort-dashboard .eco-card {
 
   // Preserve older records and assign them to Week 1.
   records = records.map(record => ({
-    ...record,
-    challengeWeek: Number(record.challengeWeek) || 1
-  }));
-
-  function save() {
-  localStorage.setItem(recordsKey, JSON.stringify(records));
-  localStorage.setItem(weekKey, String(currentWeek));
-
-  window.dispatchEvent(new Event("ecoSortLocalSaved"));
-  }
-
-  function weekItems(week) {
-    return records
-      .filter(record => Number(record.challengeWeek) === week)
-      .reduce((sum, record) => sum + (Number(record.quantity) || 0), 0);
-  }
-
-  // Automatically unlock the next week after 50 items.
-  function unlockCompletedWeeks() {
-    while (weekItems(currentWeek) >= 50) {
-      currentWeek++;
-    }
 
     save();
   }
