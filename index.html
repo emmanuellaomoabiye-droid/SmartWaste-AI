@@ -828,7 +828,29 @@ body.eco-dark #ecosort-dashboard .eco-card {
       history.appendChild(box);
     }
   }
+window.addEventListener("ecoSortCloudLoaded", function () {
+  try {
+    const savedRecords = JSON.parse(
+      localStorage.getItem(recordsKey) || "[]"
+    );
 
+    records = Array.isArray(savedRecords)
+      ? savedRecords.map(record => ({
+          ...record,
+          challengeWeek: Number(record.challengeWeek) || 1
+        }))
+      : [];
+
+    currentWeek = Math.max(
+      1,
+      parseInt(localStorage.getItem(weekKey), 10) || 1
+    );
+
+    render();
+  } catch (error) {
+    console.error("Could not display cloud records:", error);
+  }
+});
   $("eco-record-button").addEventListener("click", function () {
     const quantity = Number($("eco-quantity").value);
     const type = $("eco-type").value;
