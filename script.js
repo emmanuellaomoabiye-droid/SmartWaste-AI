@@ -63,28 +63,54 @@ async function loadModel() {
   }
 }
 // ── Live camera functions ─────────────────────────────
+
 async function startCamera() {
-  
   try {
     cameraError.hidden = true;
 
+    if (
+      !window.isSecureContext ||
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
+      throw new Error(
+        "Camera unavailable in this browser. Open the website in Chrome."
+      );
+    }
+
     cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' } },
+      video: { facingMode: { ideal: "environment" } },
       audio: false
     });
 
     cameraVideo.srcObject = cameraStream;
     cameraView.hidden = false;
     await cameraVideo.play();
+
   } catch (err) {
-    cameraError.textContent =
-      'Camera could not open. Please allow camera permission and try again.';
+    console.error("Camera error:", err);
+
+    if (err.name === "NotAllowedError") {
+      cameraError.textContent =
+        "Camera permission was denied. Allow camera access in your browser settings.";
+    } else if (err.name === "NotFoundError") {
+      cameraError.textContent =
+        "No available camera was found on this device.";
+    } else if (err.name === "NotReadableError") {
+      cameraError.textContent =
+        "The camera may be busy. Close other apps using it and try again.";
+    } else {
+      cameraError.textContent =
+        err.message || "Camera could not open. Please try again.";
+    }
+
     cameraError.hidden = false;
-    console.error('Camera error:', err);
   }
 }
 
-async function scanCamera() {
+
+
+ async function scanCamera() {
   if (!modelReady) {
     cameraError.textContent = 'Please wait for the AI model to load.';
     cameraError.hidden = false;
