@@ -384,7 +384,23 @@
   <section class="eco-panel" id="eco-charts">
     <h2>📈 Recycling Charts</h2>
     <p>Compare your recorded waste items.</p>
+<div class="eco-pie-panel">
+  <h3>🥧 Waste Collection Breakdown</h3>
+  <div id="eco-pie-chart"
+       role="img"
+       aria-label="Pie chart showing waste collected">
+  </div>
 
+  <div class="eco-pie-legend">
+    <p>🟢 Plastic: <strong id="pie-plastic">0</strong>
+      (<span id="pie-plastic-pct">0%</span>)</p>
+    <p>🔵 Paper: <strong id="pie-paper">0</strong>
+      (<span id="pie-paper-pct">0%</span>)</p>
+    <p>🟠 Metal: <strong id="pie-metal">0</strong>
+      (<span id="pie-metal-pct">0%</span>)</p>
+  </div>
+</div>
+    
     <p>🥤 Plastic: <strong id="chart-plastic-count">0</strong></p>
     <div style="background:#e5e7eb;border-radius:12px;overflow:hidden;height:20px;">
       <div id="chart-plastic-bar" style="background:#22c55e;width:0%;height:20px;"></div>
