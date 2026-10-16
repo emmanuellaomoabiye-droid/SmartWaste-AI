@@ -32,6 +32,7 @@ function cloudRef(user) {
   return doc(db, "users", user.uid, "data", "ecoSort");
 }
 
+
 async function saveCloud(user) {
   if (busy || auth.currentUser?.uid !== user.uid) return;
 
@@ -39,15 +40,37 @@ async function saveCloud(user) {
 
   try {
     const data = getLocalData();
-    await setDoc(cloudRef(user), data);
+    const reference = cloudRef(user);
+    const snapshot = await getDoc(reference);
+
+    if (data.records.length === 0 && snapshot.exists()) {
+      const cloudData = snapshot.data();
+
+      if (Array.isArray(cloudData.records) && cloudData.records.length > 0) {
+        localStorage.setItem(
+          RECORDS_KEY,
+          JSON.stringify(cloudData.records)
+        );
+        localStorage.setItem(
+          WEEK_KEY,
+          String(cloudData.currentWeek || 1)
+        );
+
+        window.dispatchEvent(new Event("ecoSortCloudLoaded"));
+        return;
+      }
+    }
+
+    await setDoc(reference, data);
     lastSaved = JSON.stringify(data);
-    console.log("EcoSort cloud save successful.");
   } catch (error) {
     console.error("EcoSort cloud save failed:", error);
   } finally {
     busy = false;
   }
 }
+
+  
 
 onAuthStateChanged(auth, async user => {
   if (!user) {
