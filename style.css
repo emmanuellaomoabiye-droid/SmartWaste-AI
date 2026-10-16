@@ -602,4 +602,21 @@ h2 {
   flex-shrink: 0;
 }
 
+#eco-app-navigation {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#eco-app-navigation button {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+
 
