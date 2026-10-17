@@ -1174,15 +1174,105 @@ window.addEventListener("ecoSortCloudLoaded", function () {
     if (node) analysis.appendChild(node);
   });
 
-  const settingsPanel = document.createElement("section");
-  settingsPanel.className = "eco-panel";
-  settingsPanel.innerHTML =
-    "<h2>⚙️ Settings</h2>" +
-    "<p>Manage your EcoSort AI preferences.</p>";
+  
+const settingsPanel = document.createElement("section");
+settingsPanel.className = "eco-panel";
+settingsPanel.innerHTML = `
+  <h2>⚙️ Settings</h2>
+  <p>Personalise your EcoSort AI experience.</p>
 
-  if (themeButton) settingsPanel.appendChild(themeButton);
-  if (modelStatus) settingsPanel.appendChild(modelStatus);
-  settings.appendChild(settingsPanel);
+  <div class="eco-settings-group">
+    <h3>🎨 Appearance</h3>
+    <p>Choose how EcoSort AI looks on your device.</p>
+  </div>
+
+  <div class="eco-settings-group">
+    <h3>👤 Account</h3>
+    <p id="eco-account-info">Check the account status shown below.</p>
+  </div>
+
+  <div class="eco-settings-group">
+    <h3>🔔 Notifications</h3>
+    <label>
+      <input type="checkbox" id="eco-reminders">
+      Enable recycling reminders
+    </label>
+    <p>Reminder preferences are saved on this device.</p>
+  </div>
+
+  <div class="eco-settings-group">
+    <h3>🎯 Weekly Goal</h3>
+    <label for="eco-weekly-goal">Items to recycle each week</label>
+    <input
+      id="eco-weekly-goal"
+      type="number"
+      min="1"
+      max="10000"
+      value="20"
+      style="display:block;width:100%;max-width:240px;padding:10px;margin-top:8px"
+    >
+    <button type="button" id="eco-save-goal">Save Weekly Goal</button>
+    <p id="eco-goal-message" aria-live="polite"></p>
+  </div>
+
+  <div class="eco-settings-group">
+    <h3>🔒 Privacy & Data</h3>
+    <p>Your waste records may be stored on this device and synced to Firebase, depending on your existing app setup.</p>
+    <p>Never share your account password with anyone.</p>
+  </div>
+
+  <div class="eco-settings-group">
+    <h3>♻️ About EcoSort AI</h3>
+    <p>EcoSort AI helps people sort waste, record recycling activities, and build a cleaner Nigeria.</p>
+    <p>Keep Nigeria Clean! 🇳🇬</p>
+  </div>
+`;
+
+if (themeButton) {
+  const appearance = settingsPanel.querySelector(".eco-settings-group");
+  appearance.appendChild(themeButton);
+}
+
+if (modelStatus) {
+  settingsPanel.querySelector("#eco-account-info")
+    .insertAdjacentElement("afterend", modelStatus);
+}
+
+settings.appendChild(settingsPanel);
+
+const goalInput = settingsPanel.querySelector("#eco-weekly-goal");
+const goalMessage = settingsPanel.querySelector("#eco-goal-message");
+const reminders = settingsPanel.querySelector("#eco-reminders");
+
+try {
+  const savedGoal = Number(localStorage.getItem("ecoSortWeeklyGoal"));
+  if (savedGoal > 0) goalInput.value = savedGoal;
+
+  reminders.checked = localStorage.getItem("ecoSortReminders") === "true";
+} catch (error) {}
+
+settingsPanel.querySelector("#eco-save-goal").addEventListener("click", () => {
+  const goal = Number(goalInput.value);
+
+  if (!Number.isInteger(goal) || goal < 1 || goal > 10000) {
+    goalMessage.textContent = "Enter a whole number from 1 to 10000.";
+    return;
+  }
+
+  try {
+    localStorage.setItem("ecoSortWeeklyGoal", String(goal));
+    goalMessage.textContent = "Weekly goal saved! ♻️";
+  } catch (error) {
+    goalMessage.textContent = "Could not save. Please try again.";
+  }
+});
+
+reminders.addEventListener("change", () => {
+  try {
+    localStorage.setItem("ecoSortReminders", String(reminders.checked));
+  } catch (error) {}
+});
+
 
   const helpPanel = document.createElement("section");
   helpPanel.className = "eco-panel";
