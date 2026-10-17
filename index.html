@@ -1268,65 +1268,61 @@ window.addEventListener("ecoSortCloudLoaded", function () {
   app.appendChild(nav);
 
   const style = document.createElement("style");
-  style.textContent = `
-    #ecosort-dashboard .eco-app-screen { display: none; }
-    #ecosort-dashboard .eco-app-screen.active { display: block; }
-    #eco-app-navigation {
-      position: fixed;
-      z-index: 9999;
-      top: 50%;
-      left: 8px;
-      bottom: auto;
-      right: auto;
-      transform: translateY(-50%);
-      width: 76px;
-max-width: 76px;
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-      overflow-x: hidden;
-      overflow-y: auto;
-      justify-content: flex-start;
-      gap: 3px;
-      padding: 8px 4px;
-      background: #ffffff;
-      border: 1px solid #b7d9bf;
-      border-radius: 18px;
-      box-shadow: 0 4px 22px #0003; 
-    }
-    #eco-app-navigation button {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 9px 2px;
-      background: transparent;
-      color: #183b27;
-      font-size: 19px;
-      line-height: 1.2;
-      flex: 0 0 auto;
-width: 64px;
-min-width: 64px;
-    }
-    #eco-app-navigation button span {
-      font-size: 10px;
-    }
-    #eco-app-navigation button[aria-current="page"] {
-      background: #087830;
-      color: white;
-    }
-    body { padding-bottom: 20px; }
+  
+style.textContent = `
+  #ecosort-dashboard .eco-app-screen { display: none; }
+  #ecosort-dashboard .eco-app-screen.active { display: block; }
 
-#ecosort-dashboard {
-  margin-left: 90px;
-}
-    #ecosort-dashboard .eco-app-screen .classifier-section {
-      padding: 12px 0;
-    }
-    @media (min-width: 650px) {
-      #eco-app-navigation button span { font-size: 12px; }
-    }
+  #eco-app-navigation {
+    position: fixed;
+    z-index: 9999;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 16px);
+    max-width: 620px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    padding: 8px 4px;
+    background: #fff;
+    border: 1px solid #b7d9bf;
+    border-radius: 18px;
+    box-shadow: 0 4px 22px #0003;
+  }
+
+  #eco-app-navigation button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 9px 2px;
+    background: transparent;
+    color: #183b27;
+    font-size: 19px;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  #eco-app-navigation button span { font-size: 10px; }
+
+  #eco-app-navigation button[aria-current="page"] {
+    background: #087830;
+    color: white;
+  }
+
+  body { padding-bottom: 82px; }
+
+  #ecosort-dashboard .eco-app-screen .classifier-section {
+    padding: 12px 0;
+  }
+
+  @media (min-width: 650px) {
+    #eco-app-navigation button span { font-size: 12px; }
+  }
+`;
+  
   
   document.head.appendChild(style);
 })();
