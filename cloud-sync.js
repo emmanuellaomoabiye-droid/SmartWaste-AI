@@ -73,6 +73,12 @@ async function saveCloud(user) {
   
 
 onAuthStateChanged(auth, async user => {
+    window.dispatchEvent(new CustomEvent("ecoSortAuthStatus", {
+    detail: {
+      signedIn: Boolean(user),
+      email: user?.email || ""
+    }
+  }));
   if (!user) {
     lastSaved = "";
     return;
