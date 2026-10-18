@@ -1239,7 +1239,20 @@ if (modelStatus) {
 }
 
 settings.appendChild(settingsPanel);
+ const accountInfo = settingsPanel.querySelector("#eco-account-info");
 
+window.addEventListener("ecoSortAuthStatus", event => {
+  const { signedIn, email } = event.detail || {};
+
+  if (signedIn) {
+    accountInfo.textContent = email
+      ? `Signed in as ${email}`
+      : "Signed in to your account.";
+  } else {
+    accountInfo.textContent =
+      "Not signed in. Cloud sync is unavailable until you sign in.";
+  }
+});
 const goalInput = settingsPanel.querySelector("#eco-weekly-goal");
 const goalMessage = settingsPanel.querySelector("#eco-goal-message");
 const reminders = settingsPanel.querySelector("#eco-reminders");
